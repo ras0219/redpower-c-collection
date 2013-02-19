@@ -27,20 +27,39 @@ uint8_t powerOfTwo8(uint8_t n) {
   return ++n;
 }
 
-/* Find log2 of 16 bit integer
+/* Find ceil(log2()) of 16 bit integer
  *
- * http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog
+ * I AM CREDIT TO TEAM
  */
+static uint16_t log2_b[] = {0x2, 0xC, 0xF0, 0xFF00};
+static uint16_t log2_S[] = {1, 2, 4, 8};
+
 uint16_t log2(uint16_t n)
 {
-  register uint16_t r; // result of log2(v) will go here
-  register uint16_t shift;
+  uint16_t r = 0;
+  --n;
 
-  r = (n > 0xFF  ) << 3; n >>= r;
-  shift = (n > 0xF   ) << 2; n >>= shift; r |= shift;
-  shift = (n > 0x3   ) << 1; n >>= shift; r |= shift;
-  r |= (n >> 1);
-  return r;
+  if (n & log2_b[3])
+    {
+      n >>= log2_S[3];
+      r |= log2_S[3];
+    } 
+  if (n & log2_b[2])
+    {
+      n >>= log2_S[2];
+      r |= log2_S[2];
+    } 
+  if (n & log2_b[1])
+    {
+      n >>= log2_S[1];
+      r |= log2_S[1];
+    } 
+  if (n & log2_b[0])
+    {
+      n >>= log2_S[0];
+      r |= log2_S[0];
+    } 
+  return r+1;
 }
 
 /* ---------------------------------------------------------------- */
@@ -48,17 +67,17 @@ uint16_t log2(uint16_t n)
 
 // Structure of free blocks
 typedef struct buddyblock {
-  // freesz is a union of free and logsz
-  // free is 0x8000 and logsz is 0x7FFF
-  uint8_t freesz;
-  uint8_t _padding;
+  uint8_t free;
+  uint8_t size;
   struct buddyblock* next;
 } bblock_t;
 
+#define BBLOCK_HEADER_SIZE 2
+
 uint8_t bb_free(bblock_t* bb)
-{ return bb->freesz & 0x80; }
+{ return bb->free; }
 uint8_t bb_size(bblock_t* bb)
-{ return bb->freesz & 0x7F; }
+{ return bb->size; }
 
 // Array of pointers to free blocks of each size.
 // Value is NULL when no free blocks exist
@@ -76,26 +95,25 @@ bblock_t* bb_buddy(bblock_t* bb)
 }
 
 // Initialize a buddy block
-void bb_init(bblock_t* bb, uint8_t freesz, bblock_t* next)
-{ bb->freesz = freesz; bb->next = next; }
+void bb_init(bblock_t* bb, uint8_t sz, bblock_t* next)
+{ bb->free = 1; bb->size = sz; bb->next = next; }
 
 extern void print(char*);
 
 bblock_t* bb_alloc(size_t logsz) {
   bblock_t *block, *buddy;
-  char buf[10];
-  itoa(logsz, buf, 10);
-  print(buf);
+
   if (logsz > HEAPSIZELOG) return NULL;
   block = freelists[logsz-1];
   if (block == NULL) {
-    print("<Debug A>");
     // Alloc larger block
     block = bb_alloc(logsz+1);
     // Short circuit failure
     if (block == NULL) return NULL;
     // Reassign size
-    block->freesz = logsz;
+    block->size = logsz;
+    // Mark as no longer free
+    block->free = 0;
     // Find buddy with new size
     buddy = bb_buddy(block);
     // Initialize new buddy
@@ -105,11 +123,10 @@ bblock_t* bb_alloc(size_t logsz) {
     // Return allocated subblock
     return block;
   }
-  print("<Debug B>");
   // Remove block from free store
   freelists[logsz-1] = block->next;
   // Mark block as not free
-  block->freesz &= 0x7F;
+  block->free = 0;
   // Return allocated block
   return block;
 }
@@ -125,8 +142,16 @@ void initialize_dynamic_memory() {
 
 // Glue the standard functions onto the buddy allocator
 void* __fastcall__ malloc (size_t size) {
-  size_t logsz = powerOfTwo16(size+1);
-  return bb_alloc(logsz)->next;
+  char buf[10];
+  size_t logsz;
+
+  itoa(size, buf, 10);
+  print(buf);
+  logsz = log2(size+1);
+  itoa(logsz, buf, 10);
+  print(buf);
+
+  return (uint8_t*)bb_alloc(logsz) + BBLOCK_HEADER_SIZE;
 }
 void __fastcall__ free (void* block) {
   bb_dealloc((bblock_t*)((uint8_t*)block - 1));
