@@ -14,7 +14,7 @@ LLIBS  = $(LIBDIR)rpc8e.lib
 CPU = 65c02 
 
 
-IMAGES = myprog.img memtest.img malloc-test.img
+IMAGES = myprog.img memtest.img malloc-test.img elevator.img
 
 .PHONY: all
 
@@ -40,6 +40,8 @@ depends:
 .SUFFIXES:
 # DO NOT DELETE
 
+elevator.o: elevator.h include/redbus.h include/iox.h
+elevator.o: include/stddef.h include/stdint.h
 core.o: core.h include/redbus.h include/console.h include/string.h
 core.o: include/stddef.h include/stdint.h
 malloc-test.o: core.h include/redbus.h include/console.h include/string.h
