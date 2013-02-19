@@ -1,30 +1,5 @@
-#include <redbus.h>
-#include <console.h>
+#include "core.h"
 #include <string.h>
-#include <stdint.h>
-
-#define redbus (Console*)0x0300
-#define default_console_id 0x01
-
-#define malloc_start (void*)0x2000
-#define heap_space (size_t)0x2000
-
-void* malloc(size_t sz)
-{
-  return NULL;
-}
-
-char * text = "Hello, C World!";
-unsigned int * base = NULL;
-Console* console;
-
-void print(char * text)
-{
-  int len;
-  len = strlen(text);
-  memcpy(console->display, text, len);
-  console->line += 1;
-}
 
 void test(unsigned int* loc)
 {
@@ -35,12 +10,12 @@ void test(unsigned int* loc)
 
 void main() {
   rb_set_window(redbus);
-  rb_map_device(default_console_id);
+  rb_map_device(default_con_id);
   rb_enable();
 
-  console = redbus;
+  con = redbus;
 
-  console->cursor_mode = 2;
+  con->cursor_mode = 2;
   print("Memory test.");
   print("TESTING 0x0000");
   test((uint16_t*)0x0000);

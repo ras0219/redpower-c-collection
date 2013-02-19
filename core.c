@@ -1,4 +1,6 @@
 #include "core.h"
+#include <string.h>
+#include <stdint.h>
 
 Console* con;
 
@@ -11,6 +13,14 @@ void blit(char command, char x, char y, char xo, char yo, char w, char h) {
 	con->blit_height = h;
 	con->blit_mode = command;
 	while(con->blit_mode != 0) ; //WAI
+}
+
+void print(char * text)
+{
+  int len;
+  len = strlen(text);
+  memcpy(con->display, text, len);
+  con->line += 1;
 }
 
 size_t getline(char* buf, size_t len) {
@@ -53,3 +63,20 @@ size_t getline(char* buf, size_t len) {
     }
   }
 }
+
+// Implementation for stdlib.h
+#define HEAPSTART (uint8_t*)0x2000
+
+uint8_t* _heap_ptr = HEAPSTART;
+
+void* __fastcall__ malloc (size_t size)
+{
+  void* rptr = _heap_ptr;
+  _heap_ptr += size;
+  return rptr;
+}
+/*void* __fastcall__ calloc (size_t count, size_t size);
+void* __fastcall__ realloc (void* block, size_t size);
+*/
+
+void __fastcall__ free (void* block) { /* best free NA! */ }

@@ -24,4 +24,9 @@ void blit(char command, char x, char y, char xo, char yo, char w, char h);
 
 size_t getline(char* buf, size_t len);
 
+// Print one line at con->line
+// text - zero terminated string
+// (side effect: con->line++)
+void print(char* text);
+
 #endif

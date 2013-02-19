@@ -14,7 +14,7 @@ LLIBS  = $(LIBDIR)rpc8e.lib
 CPU = 65c02 
 
 
-IMAGES = myprog.img memtest.img
+IMAGES = myprog.img memtest.img malloc-test.img
 
 .PHONY: all
 
@@ -42,7 +42,9 @@ depends:
 
 core.o: core.h include/redbus.h include/console.h include/string.h
 core.o: include/stddef.h include/stdint.h
-memtest.o: include/redbus.h include/console.h include/string.h
+malloc-test.o: core.h include/redbus.h include/console.h include/string.h
+malloc-test.o: include/stddef.h include/stdint.h
+memtest.o: core.h include/redbus.h include/console.h include/string.h
 memtest.o: include/stddef.h include/stdint.h
 myprog.o: core.h include/redbus.h include/console.h include/string.h
 myprog.o: include/stddef.h include/stdint.h
