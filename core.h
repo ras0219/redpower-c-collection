@@ -5,6 +5,7 @@
 #include <console.h>
 #include <string.h>
 #include <stdint.h>
+#include "buddy.h"
 
 #define redbus (Console*)0x0300
 #define default_con_id 0x01
