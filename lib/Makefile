@@ -1,4 +1,4 @@
-AR = ../bin/ar65
+AR = ~/opt/share/rpc8ecc/bin/ar65
 export CPU = 65c02
 
 

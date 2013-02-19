@@ -9,9 +9,10 @@
 
 SYS	= none
 
-AS	= ../../bin/ca65
-CC	= ../../bin/cc65
-LD	= ../../bin/ld65
+CCDIR = ~/opt/share/rpc8ecc/bin/
+AS	= $(CCDIR)/ca65
+CC	= $(CCDIR)/cc65
+LD	= $(CCDIR)/ld65
 
 AFLAGS	= -t $(SYS) --forget-inc-paths -I../asminc --cpu $(CPU)
 CFLAGS	= -Osir -g -T -t $(SYS) --forget-inc-paths -I . -I ../../include --cpu $(CPU)
@@ -127,7 +128,8 @@ S_OBJS = zerobss.o \
 	strtoumax.o     \
 	strupper.o	\
 	tolower.o	\
-	toupper.o	
+	toupper.o	\
+	wait.o		\
 	# _cwd.o          \
 	# _environ.o	\
 	# _fdesc.o 	\
