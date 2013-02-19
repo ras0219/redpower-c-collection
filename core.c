@@ -63,20 +63,3 @@ size_t getline(char* buf, size_t len) {
     }
   }
 }
-
-// Implementation for stdlib.h
-#define HEAPSTART (uint8_t*)0x2000
-
-uint8_t* _heap_ptr = HEAPSTART;
-
-void* __fastcall__ malloc (size_t size)
-{
-  void* rptr = _heap_ptr;
-  _heap_ptr += size;
-  return rptr;
-}
-/*void* __fastcall__ calloc (size_t count, size_t size);
-void* __fastcall__ realloc (void* block, size_t size);
-*/
-
-void __fastcall__ free (void* block) { /* best free NA! */ }

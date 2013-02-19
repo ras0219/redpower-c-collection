@@ -26,8 +26,8 @@ all: $(IMAGES)
 %.o: %.s
 	$(AS) $(CFLAGS) $<
 
-%.img: %.o core.o
-	$(LD) $(LFLAGS) $< core.o $(LLIBS) -o $@
+%.img: %.o core.o buddy.o
+	$(LD) $(LFLAGS) $< core.o buddy.o $(LLIBS) -o $@
 	$(AL) $@
 
 
