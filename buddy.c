@@ -85,7 +85,7 @@ void bb_init(bblock_t* bb, uint8_t freesz, bblock_t* next)
 { bb->freesz = freesz; bb->next = next; }
 
 bblock_t* bb_alloc(size_t logsz) {
-  bblock_t* block, buddy;
+  bblock_t *block, *buddy;
   if (logsz >= HEAPSIZELOG) return NULL;
   block = freelists[logsz];
   if (block == NULL) {
