@@ -4,11 +4,23 @@
 #include <redbus.h>
 #include <iox.h>
 #include <stdint.h>
+#include <cpu.h>
 
 #define redbus (Iox*)0x0300
-#define default_con_id 0x03
+#define IOX_con_id 0x03
 
-extern Iox* con;
+#define ELEV_CLEAN WHITE 
+#define ELEV_UP    BLACK
+#define ELEV_DOWN  RED
+
+#define ELEVATOR_RESET_COUNT 32
+
+#define ELEV_DELAY \
+    do { \
+        wait();\
+        wait();\
+    } while (0)
+
 
 void elevator_up();
 void elevator_down();

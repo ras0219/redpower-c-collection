@@ -1,5 +1,5 @@
 CCDIR=~/opt/share/rpc8ecc/bin/
-LIBDIR=~/opt/share/rpc8ecc/lib/
+LIBDIR=./lib/
 LD = $(CCDIR)ld65
 AS = $(CCDIR)ca65
 CC = $(CCDIR)cc65
