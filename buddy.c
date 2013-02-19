@@ -46,11 +46,6 @@ uint16_t log2(uint16_t n)
 /* ---------------------------------------------------------------- */
 // Begin buddy allocator
 
-// Beginning of heap pointer
-uint8_t* heapstart = HEAPSTART;
-// End of heap pointer
-uint8_t* heapend = HEAPSTART + HEAPSIZE;
-
 // Structure of free blocks
 typedef struct buddyblock {
   // freesz is a union of free and logsz
@@ -84,11 +79,17 @@ bblock_t* bb_buddy(bblock_t* bb)
 void bb_init(bblock_t* bb, uint8_t freesz, bblock_t* next)
 { bb->freesz = freesz; bb->next = next; }
 
+extern void print(char*);
+
 bblock_t* bb_alloc(size_t logsz) {
   bblock_t *block, *buddy;
-  if (logsz >= HEAPSIZELOG) return NULL;
-  block = freelists[logsz];
+  char buf[10];
+  itoa(logsz, buf, 10);
+  print(buf);
+  if (logsz > HEAPSIZELOG) return NULL;
+  block = freelists[logsz-1];
   if (block == NULL) {
+    print("<Debug A>");
     // Alloc larger block
     block = bb_alloc(logsz+1);
     // Short circuit failure
@@ -100,12 +101,13 @@ bblock_t* bb_alloc(size_t logsz) {
     // Initialize new buddy
     bb_init(buddy, 0x80 | logsz, NULL);
     // Add new buddy to freelist
-    freelists[logsz] = buddy;
+    freelists[logsz-1] = buddy;
     // Return allocated subblock
     return block;
   }
+  print("<Debug B>");
   // Remove block from free store
-  freelists[logsz] = block->next;
+  freelists[logsz-1] = block->next;
   // Mark block as not free
   block->freesz &= 0x7F;
   // Return allocated block
@@ -116,6 +118,10 @@ void bb_dealloc(bblock_t*) {
   // Best free NA
 }
 
+void initialize_dynamic_memory() {
+  bb_init((bblock_t*)HEAPSTART, 0x80 | HEAPSIZELOG, NULL);
+  freelists[HEAPSIZELOG-1] = (bblock_t*)HEAPSTART;
+}
 
 // Glue the standard functions onto the buddy allocator
 void* __fastcall__ malloc (size_t size) {

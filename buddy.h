@@ -13,6 +13,8 @@
 #define HEAPSIZE (1 << HEAPSIZELOG)
 #endif
 
+void initialize_dynamic_memory();
+
 void* __fastcall__ malloc (size_t size);
 void __fastcall__ free (void* block);
 
