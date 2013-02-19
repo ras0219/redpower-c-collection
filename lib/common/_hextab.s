@@ -9,7 +9,7 @@
 	.debuginfo	on
 	.importzp	sp, sreg, regsave, regbank, tmp1, ptr1, ptr2
 	.macpack	longbranch
-	.dbg		file, "_hextab.c", 306, 1361178487
+	.dbg		file, "_hextab.c", 306, 1361266118
 	.export		__hextab
 
 .segment	"RODATA"

@@ -2,9 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct buddyblock {
+  uint8_t free;
+  uint8_t size;
+  struct buddyblock* next;
+  struct buddyblock* prev;
+} bblock_t;
+
+extern bblock_t* freelists[];
+
+char buf[30];
+
+void checknum(int);
+
 void main() {
   char* s1, *s2, *s3;
-  char buf[10];
   // Basic setup
   initialize_dynamic_memory();
 
@@ -40,5 +52,22 @@ void main() {
   free(s1);
   free(s2);
   free(s3);
+  print("Testing freelists.");
+  checknum(12);
   print("Test complete.");
+}
+
+void checknum(int i) {
+  if (i == 0) return;
+  memset(buf, '_', 29);
+  buf[29] = 0;
+  itoa(i, buf, 10);
+  buf[strlen(buf)]= '_';
+  itoa(freelists[i], buf+3, 16);
+  buf[strlen(buf)]= '_';
+  itoa(freelists[i]->size, buf+8, 10);
+  buf[strlen(buf)]= '_';
+  print(buf);
+  print("-=-=-");
+  checknum(i-1);
 }

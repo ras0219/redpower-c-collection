@@ -1,5 +1,6 @@
 CCDIR=~/opt/share/rpc8ecc/bin/
-LIBDIR=./lib/
+LIBDIR=~/opt/share/rpc8ecc/lib/
+#./lib/
 LD = $(CCDIR)ld65
 AS = $(CCDIR)ca65
 CC = $(CCDIR)cc65
@@ -18,7 +19,7 @@ IMAGES = myprog.img memtest.img malloc-test.img elevator.img
 
 .PHONY: all
 
-all: $(IMAGES)
+all: lib $(IMAGES)
 
 %.s: %.c
 	$(CC) $(CFLAGS) $(CINCLUDE) $<
@@ -36,6 +37,11 @@ clean:
 
 depends:
 	makedepend -Yinclude/ *.c
+
+.PHONY: lib
+
+lib:
+	make -C lib
 
 .SUFFIXES:
 # DO NOT DELETE

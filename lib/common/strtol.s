@@ -9,11 +9,11 @@
 	.debuginfo	on
 	.importzp	sp, sreg, regsave, regbank, tmp1, ptr1, ptr2
 	.macpack	longbranch
-	.dbg		file, "strtol.c", 2969, 1361178487
-	.dbg		file, "../../include/limits.h", 2978, 1361178487
-	.dbg		file, "../../include/ctype.h", 7770, 1361178487
-	.dbg		file, "../../include/errno.h", 3647, 1361178487
-	.dbg		file, "../../include/stdlib.h", 5578, 1361178487
+	.dbg		file, "strtol.c", 2969, 1361266118
+	.dbg		file, "../../include/limits.h", 2978, 1361245852
+	.dbg		file, "../../include/ctype.h", 7770, 1361245852
+	.dbg		file, "../../include/errno.h", 3647, 1361245852
+	.dbg		file, "../../include/stdlib.h", 5578, 1361245852
 	.import		__ctype
 	.import		__maperrno
 	.import		__errno

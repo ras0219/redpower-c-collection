@@ -9,9 +9,9 @@
 	.debuginfo	on
 	.importzp	sp, sreg, regsave, regbank, tmp1, ptr1, ptr2
 	.macpack	longbranch
-	.dbg		file, "strxfrm.c", 222, 1361178487
-	.dbg		file, "../../include/string.h", 4883, 1361178487
-	.dbg		file, "../../include/stddef.h", 2972, 1361178487
+	.dbg		file, "strxfrm.c", 222, 1361266118
+	.dbg		file, "../../include/string.h", 4883, 1361245852
+	.dbg		file, "../../include/stddef.h", 2972, 1361245852
 	.import		_strlen
 	.import		_strncpy
 	.export		_strxfrm

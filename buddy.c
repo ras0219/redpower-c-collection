@@ -70,14 +70,10 @@ typedef struct buddyblock {
   uint8_t free;
   uint8_t size;
   struct buddyblock* next;
+  struct buddyblock* prev;
 } bblock_t;
 
 #define BBLOCK_HEADER_SIZE 2
-
-uint8_t bb_free(bblock_t* bb)
-{ return bb->free; }
-uint8_t bb_size(bblock_t* bb)
-{ return bb->size; }
 
 // Array of pointers to free blocks of each size.
 // Value is NULL when no free blocks exist
@@ -89,16 +85,14 @@ bblock_t* bb_buddy(bblock_t* bb)
   uint16_t logsz;
   size_t offset;
 
-  logsz = 1 << (uint16_t)bb_size(bb);
+  logsz = 1 << (uint16_t)bb->size;
   offset = (uint8_t*)bb - HEAPSTART;
   return (bblock_t*)(HEAPSTART + (logsz ^ offset));
 }
 
 // Initialize a buddy block
-void bb_init(bblock_t* bb, uint8_t sz, bblock_t* next)
-{ bb->free = 1; bb->size = sz; bb->next = next; }
-
-extern void print(char*);
+void bb_init(bblock_t* bb, uint8_t sz, bblock_t* next, bblock_t* prev)
+{ bb->free = 1; bb->size = sz; bb->next = next; bb->prev = prev; }
 
 bblock_t* bb_alloc(size_t logsz) {
   bblock_t *block, *buddy;
@@ -117,7 +111,7 @@ bblock_t* bb_alloc(size_t logsz) {
     // Find buddy with new size
     buddy = bb_buddy(block);
     // Initialize new buddy
-    bb_init(buddy, 0x80 | logsz, NULL);
+    bb_init(buddy, logsz, NULL, NULL);
     // Add new buddy to freelist
     freelists[logsz-1] = buddy;
     // Return allocated subblock
@@ -125,34 +119,54 @@ bblock_t* bb_alloc(size_t logsz) {
   }
   // Remove block from free store
   freelists[logsz-1] = block->next;
+  if (block->next)
+    block->next->prev = NULL;
   // Mark block as not free
   block->free = 0;
   // Return allocated block
   return block;
 }
 
-void bb_dealloc(bblock_t*) {
+void bb_dealloc(bblock_t* bb) {
   // Best free NA
+  bblock_t* buddy;
+  bb->free = 1;
+  if (bb->size == HEAPSIZELOG) {
+    bb->next = NULL;
+    bb->prev = NULL;
+    freelists[HEAPSIZELOG-1] = bb;
+    return;
+  }
+
+  buddy = bb_buddy(bb);
+  if (buddy->free) {
+    if (buddy->next != NULL) buddy->next->prev = buddy->prev;
+    if (buddy->prev != NULL) buddy->prev->next = buddy->next;
+    if (buddy->prev == NULL) freelists[buddy->size-1] = buddy->next;
+    bb = bb < buddy ? bb : buddy;
+    ++bb->size;
+    bb_dealloc(bb);
+  } else {
+    bb->next = freelists[bb->size-1];
+    bb->prev = NULL;
+    if (bb->next != NULL)
+      bb->next->prev = bb;
+    freelists[bb->size-1] = bb;
+  }
 }
 
 void initialize_dynamic_memory() {
-  bb_init((bblock_t*)HEAPSTART, 0x80 | HEAPSIZELOG, NULL);
+  bb_init((bblock_t*)HEAPSTART, HEAPSIZELOG, NULL, NULL);
   freelists[HEAPSIZELOG-1] = (bblock_t*)HEAPSTART;
 }
 
 // Glue the standard functions onto the buddy allocator
 void* __fastcall__ malloc (size_t size) {
-  char buf[10];
   size_t logsz;
 
-  itoa(size, buf, 10);
-  print(buf);
   logsz = log2(size+1);
-  itoa(logsz, buf, 10);
-  print(buf);
-
   return (uint8_t*)bb_alloc(logsz) + BBLOCK_HEADER_SIZE;
 }
 void __fastcall__ free (void* block) {
-  bb_dealloc((bblock_t*)((uint8_t*)block - 1));
+  bb_dealloc((bblock_t*)((uint8_t*)block - BBLOCK_HEADER_SIZE));
 }
