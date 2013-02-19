@@ -1,0 +1,48 @@
+CCDIR=~/opt/share/rpc8ecc/bin/
+LIBDIR=~/opt/share/rpc8ecc/lib/
+LD = $(CCDIR)ld65
+AS = $(CCDIR)ca65
+CC = $(CCDIR)cc65
+AL = $(CCDIR)align
+
+CINCLUDE = -Iinclude
+CFLAGS = -t none --cpu $(CPU)
+LFLAGS = -C $(LIBDIR)rpc8e.cfg
+LLIBS  = $(LIBDIR)rpc8e.lib
+
+#gonna leave this here for now
+CPU = 65c02 
+
+
+IMAGES = myprog.img memtest.img
+
+.PHONY: all
+
+all: $(IMAGES)
+
+%.s: %.c
+	$(CC) $(CFLAGS) $(CINCLUDE) $<
+
+%.o: %.s
+	$(AS) $(CFLAGS) $<
+
+%.img: %.o core.o
+	$(LD) $(LFLAGS) $< core.o $(LLIBS) -o $@
+	$(AL) $@
+
+
+clean:
+	rm  *.o *.s
+
+depends:
+	makedepend -Yinclude/ *.c
+
+.SUFFIXES:
+# DO NOT DELETE
+
+core.o: core.h include/redbus.h include/console.h include/string.h
+core.o: include/stddef.h include/stdint.h
+memtest.o: include/redbus.h include/console.h include/string.h
+memtest.o: include/stddef.h include/stdint.h
+myprog.o: core.h include/redbus.h include/console.h include/string.h
+myprog.o: include/stddef.h include/stdint.h
