@@ -98,7 +98,7 @@ bblock_t* bb_alloc(size_t logsz) {
     // Find buddy with new size
     buddy = bb_buddy(block);
     // Initialize new buddy
-    bb_init(buddy, 0x80 | logsz);
+    bb_init(buddy, 0x80 | logsz, NULL);
     // Add new buddy to freelist
     freelists[logsz] = buddy;
     // Return allocated subblock
@@ -119,7 +119,7 @@ void bb_dealloc(bblock_t*) {
 
 // Glue the standard functions onto the buddy allocator
 void* __fastcall__ malloc (size_t size) {
-  size_t logsz = powerOfTwo(size+1);
+  size_t logsz = powerOfTwo16(size+1);
   return bb_alloc(logsz)->next;
 }
 void __fastcall__ free (void* block) {
