@@ -1,13 +1,16 @@
-#ifndef _CORE_H_
-#define _CORE_H_
+#ifndef _ELEVATOR_H_
+#define _ELEVATOR_H_
 
 #include <redbus.h>
+#include "core.h"
 #include <iox.h>
 #include <stdint.h>
 #include <cpu.h>
 
-#define redbus (Iox*)0x0300
+#define IOX_redbus (Iox*)0x0300
+#define CON_redbus (Console*)0x0300
 #define IOX_con_id 0x03
+#define CON_con_id 0x01
 
 #define ELEV_CLEAN WHITE 
 #define ELEV_UP    BLACK
@@ -17,8 +20,7 @@
 
 #define ELEV_DELAY \
     do { \
-        wait();\
-        wait();\
+        for(del=0;del<20000;del++);\
     } while (0)
 
 
