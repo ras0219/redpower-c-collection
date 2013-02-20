@@ -1,9 +1,12 @@
 CCDIR=~/opt/share/rpc8ecc/bin/
 LIBDIR=./lib/
+
 LD = $(CCDIR)ld65
 AS = $(CCDIR)ca65
 CC = $(CCDIR)cc65
 AL = $(CCDIR)align
+
+KEEP_ASS = True
 
 CINCLUDE = -Iinclude
 CFLAGS = -t none --cpu $(CPU)
@@ -22,9 +25,13 @@ all: $(IMAGES)
 
 %.s: %.c
 	$(CC) $(CFLAGS) $(CINCLUDE) $<
+ifdef KEEP_ASS
+	cp $@ s.$@
+endif
 
 %.o: %.s
 	$(AS) $(CFLAGS) $<
+
 
 %.img: %.o core.o buddy.o
 	$(LD) $(LFLAGS) $< core.o buddy.o $(LLIBS) -o $@
