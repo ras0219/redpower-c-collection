@@ -1,20 +1,21 @@
-CCDIR=~/opt/share/rpc8ecc/bin/
+CCDIR=
+#~/opt/share/rpc8ecc/bin/
 LIBDIR=./lib/
 
 LD = $(CCDIR)ld65
 AS = $(CCDIR)ca65
-CC = $(CCDIR)cc65
+CC = $(CCDIR)cl65
 AL = $(CCDIR)align
 
 KEEP_ASS = True
 
 CINCLUDE = -Iinclude
+CPU = 65c02 # 65816
 CFLAGS = -t none --cpu $(CPU)
 LFLAGS = -C $(LIBDIR)rpc8e.cfg
 LLIBS  = $(LIBDIR)rpc8e.lib
 
 #gonna leave this here for now
-CPU = 65c02 
 
 
 IMAGES = myprog.img memtest.img malloc-test.img elevator.img
@@ -24,13 +25,13 @@ IMAGES = myprog.img memtest.img malloc-test.img elevator.img
 all: lib $(IMAGES)
 
 %.s: %.c
-	$(CC) $(CFLAGS) $(CINCLUDE) $<
+	$(CC) -S $(CFLAGS) $(CINCLUDE) $<
 ifdef KEEP_ASS
 	cp $@ s.$@
 endif
 
-%.o: %.s
-	$(AS) $(CFLAGS) $<
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CINCLUDE) $<
 
 
 %.img: %.o core.o buddy.o
@@ -52,13 +53,15 @@ lib:
 .SUFFIXES:
 # DO NOT DELETE
 
-elevator.o: elevator.h include/redbus.h include/iox.h
-elevator.o: include/stddef.h include/stdint.h
+buddy.o: include/stdint.h buddy.h include/stdlib.h
 core.o: core.h include/redbus.h include/console.h include/string.h
-core.o: include/stddef.h include/stdint.h
+core.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
+elevator.o: elevator.h include/redbus.h core.h include/console.h
+elevator.o: include/string.h include/stddef.h include/stdint.h buddy.h
+elevator.o: include/stdlib.h include/iox.h include/cpu.h
 malloc-test.o: core.h include/redbus.h include/console.h include/string.h
-malloc-test.o: include/stddef.h include/stdint.h
+malloc-test.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
 memtest.o: core.h include/redbus.h include/console.h include/string.h
-memtest.o: include/stddef.h include/stdint.h
+memtest.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
 myprog.o: core.h include/redbus.h include/console.h include/string.h
-myprog.o: include/stddef.h include/stdint.h
+myprog.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
