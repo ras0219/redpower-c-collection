@@ -3,46 +3,28 @@
 void pass()
 {
   int i;
+  char buf[10];
 
-  i = 0;
-  while(1) {
-    if (i == 3) break;
+  for (i=0;i!=6;++i) {
     // Code here
-    print("+");
-    ++i;
+    itoa(i, buf+3, 10);
+    if (i < 3) buf[0] = '<';
+    else buf[0] = ' ';
+    if (i == 3) buf[1] = '=';
+    else buf[1] = ' ';
+    if (i > 3) buf[2] = '>';
+    else buf[2] = ' ';
+    print(buf);
   }
 }
 
-void maybe()
+void infinite()
 {
   int i;
-
-  i = 0;
-  while(i != 3) {
-    // Code here
-    print("+");
-    ++i;
+  for (i=0; i < 3; ++i) {
+    print("-");
   }
-}
-
-void failmaybe()
-{
-  int i;
-
-  i = 0;
-  for(;i != 3;) {
-    // Code here
-    print("+");
-    ++i;
-  }
-}
-
-void fail()
-{
-  int i;
-
-  for(i = 0;i != 3;++i) {
-    // Code here
+  for (i=0; i > 3; ++i) {
     print("+");
   }
 }
@@ -60,8 +42,6 @@ void main()
 
   print("Begin!");
   print("pass"); pass();
-  print("maybe"); maybe();
-  print("failmaybe"); failmaybe();
-  print("fail"); fail();
+  print("infinite"); infinite();
   print("End!");
 }
