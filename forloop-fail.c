@@ -1,5 +1,34 @@
 #include "core.h"
 
+
+//int = 16bit return value.
+//0000 0000 = success
+//bits set to 1 indicate failure
+//up to 16 tests per function
+
+//both unsigned and signed
+//b0 >
+//b1 <
+//b2 & | 
+//b3 ^
+//b4 - +
+//b5 * 
+//b6 / %
+
+int int8_test()
+{
+  return 0;
+}
+int int16_test()
+{
+  return 0;
+}
+int int32_test()
+{
+  return 0;
+}
+
+
 void pass()
 {
   int i;
