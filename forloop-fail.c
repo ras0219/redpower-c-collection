@@ -18,6 +18,32 @@ void pass()
   }
 }
 
+int gt(int a, int b) {
+  return (b-a) & (1 << 15);
+}
+
+int lt(int a, int b) {
+  return (a-b) & (1 << 15);
+}
+
+void workaround()
+{
+  int i;
+  char buf[10];
+
+  for (i=0;i!=6;++i) {
+    // Code here
+    itoa(i, buf+3, 10);
+    if (lt(i, 3)) buf[0] = '<';
+    else buf[0] = ' ';
+    if (i == 3) buf[1] = '=';
+    else buf[1] = ' ';
+    if (gt(i, 3)) buf[2] = '>';
+    else buf[2] = ' ';
+    print(buf);
+  }
+}
+
 void infinite()
 {
   int i;
@@ -42,6 +68,7 @@ void main()
 
   print("Begin!");
   print("pass"); pass();
+  print("workaround"); workaround();
   print("infinite"); infinite();
   print("End!");
 }
