@@ -4,34 +4,33 @@ LIBDIR=./lib/
 
 LD = $(CCDIR)ld65
 AS = $(CCDIR)ca65
-CC = $(CCDIR)cl65
+CC = $(CCDIR)cc65
 AL = $(CCDIR)align
 
 KEEP_ASS = True
 
+CPU = 65c02 
 CINCLUDE = -Iinclude
-CPU = 65c02 # 65816
 CFLAGS = -t none --cpu $(CPU)
 LFLAGS = -C $(LIBDIR)rpc8e.cfg
 LLIBS  = $(LIBDIR)rpc8e.lib
 
 #gonna leave this here for now
 
-
-IMAGES = myprog.img memtest.img malloc-test.img elevator.img forloop-fail.img
+IMAGES = myprog.img memtest.img malloc-test.img elevator.img
 
 .PHONY: all
 
-all: lib $(IMAGES)
+all: $(IMAGES)
 
 %.s: %.c
-	$(CC) -S $(CFLAGS) $(CINCLUDE) $<
+	$(CC) $(CFLAGS) $(CINCLUDE) $<
 ifdef KEEP_ASS
 	cp $@ s.$@
 endif
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) $(CINCLUDE) $<
+%.o: %.s
+	$(AS) $(CFLAGS) $<
 
 
 %.img: %.o core.o buddy.o
@@ -45,23 +44,16 @@ clean:
 depends:
 	makedepend -Yinclude/ *.c
 
-.PHONY: lib
-
-lib:
-	make -C lib
-
 .SUFFIXES:
 # DO NOT DELETE
 
-buddy.o: include/stdint.h buddy.h include/stdlib.h
+elevator.o: elevator.h include/redbus.h include/iox.h
+elevator.o: include/stddef.h include/stdint.h
 core.o: core.h include/redbus.h include/console.h include/string.h
-core.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
-elevator.o: elevator.h include/redbus.h core.h include/console.h
-elevator.o: include/string.h include/stddef.h include/stdint.h buddy.h
-elevator.o: include/stdlib.h include/iox.h include/cpu.h
+core.o: include/stddef.h include/stdint.h
 malloc-test.o: core.h include/redbus.h include/console.h include/string.h
-malloc-test.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
+malloc-test.o: include/stddef.h include/stdint.h
 memtest.o: core.h include/redbus.h include/console.h include/string.h
-memtest.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
+memtest.o: include/stddef.h include/stdint.h
 myprog.o: core.h include/redbus.h include/console.h include/string.h
-myprog.o: include/stddef.h include/stdint.h buddy.h include/stdlib.h
+myprog.o: include/stddef.h include/stdint.h
