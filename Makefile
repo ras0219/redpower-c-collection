@@ -18,7 +18,7 @@ LLIBS  = $(LIBDIR)rpc8e.lib
 #gonna leave this here for now
 
 
-IMAGES = myprog.img memtest.img malloc-test.img elevator.img
+IMAGES = myprog.img memtest.img malloc-test.img elevator.img forloop-fail.img
 
 .PHONY: all
 
