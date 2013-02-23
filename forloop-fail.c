@@ -1,6 +1,19 @@
 #include "core.h"
 
 
+//make sure:  a,b,c,d are enabled
+#define TEST(var1, operation, var2) \
+    do{\
+  a = var1 ;\
+  b = var2 ;\
+  c = (a operation b);\
+  d = (var1 operation var2);\
+  if(c != d) \
+    print("failed! "  #var1  #operation  #var2 );\
+    }\
+  while(0);\
+
+
 //int = 16bit return value.
 //0000 0000 = success
 //bits set to 1 indicate failure
@@ -17,6 +30,18 @@
 
 int int8_test()
 {
+  int8_t a,b,c,d = 0;
+  
+  TEST(0, - ,0);
+  TEST(5, - ,0);
+
+  TEST(0, - ,5);
+  TEST(6, - ,3);
+  
+  TEST(-10, - ,1);
+  
+  TEST(125, > , 126);
+
   return 0;
 }
 int int16_test()
@@ -94,6 +119,10 @@ void main()
 
   con->cursor_mode = 0;
   con->line = 1;
+
+  print("Begin");
+  int8_test();
+  while(1);
 
   print("Begin!");
   print("pass"); pass();
