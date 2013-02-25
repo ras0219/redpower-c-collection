@@ -114,6 +114,96 @@ void infinite()
   if (!(cond))			      \
     print("Assertion failed: " #cond);
 
+void unsigned_test()
+{
+    uint16_t u16_0 = 0,
+      u16_1 = 1,
+      u16_127 = 127,
+      u16_128 = 128,
+      u16_129 = 129,
+      u16_255 = 255;
+
+    weak_assert(u16_1 > u16_0);
+    weak_assert(u16_127 > u16_0);
+    weak_assert(u16_128 > u16_0);
+    weak_assert(u16_129 > u16_0);
+    weak_assert(u16_255 > u16_0);
+
+    weak_assert(u16_0 < u16_1);
+    weak_assert(u16_0 < u16_127);
+    weak_assert(u16_0 < u16_128);
+    weak_assert(u16_0 < u16_129);
+    weak_assert(u16_0 < u16_255);
+
+    weak_assert(u16_127 > u16_1);
+    weak_assert(u16_128 > u16_1);
+    weak_assert(u16_129 > u16_1);
+    weak_assert(u16_255 > u16_1);
+
+    weak_assert(u16_1 < u16_127);
+    weak_assert(u16_1 < u16_128);
+    weak_assert(u16_1 < u16_129);
+    weak_assert(u16_1 < u16_255);
+
+    weak_assert(u16_128 > u16_127);
+    weak_assert(u16_129 > u16_127);
+    weak_assert(u16_255 > u16_127);
+
+    weak_assert(u16_127 < u16_128);
+    weak_assert(u16_127 < u16_129);
+    weak_assert(u16_127 < u16_255);
+
+    weak_assert(u16_129 > u16_128);
+    weak_assert(u16_255 > u16_128);
+
+    weak_assert(u16_128 < u16_129);
+    weak_assert(u16_128 < u16_255);
+
+    weak_assert(u16_255 > u16_129);
+
+    weak_assert(u16_129 < u16_255);
+}
+
+void signed_test()
+{
+    int16_t s16_0 = 0,
+      s16_1 = 1,
+      s16_n1 = -1,
+      s16_32767 = 32767,
+      s16_n32767 = -32767,
+      s16_n32768 = 0x8000; //-32768;
+
+    weak_assert(s16_1 > s16_0);
+    weak_assert(s16_0 < s16_1);
+
+    weak_assert(s16_1 > s16_n1);
+    weak_assert(s16_n1 < s16_1);
+
+    weak_assert(s16_32767 > s16_0);
+    weak_assert(s16_0 < s16_32767);
+
+    weak_assert(s16_n1 < s16_0);
+    weak_assert(s16_0 > s16_n1);
+
+    weak_assert(s16_n32768 < s16_0);
+    weak_assert(s16_0 > s16_n32768);
+
+    weak_assert(s16_32767 > s16_1);
+    weak_assert(s16_1 < s16_32767);
+
+    weak_assert(s16_n32768 < s16_n1);
+    weak_assert(s16_n1 > s16_n32768);
+
+    weak_assert(s16_32767 > s16_n32768);
+    weak_assert(s16_n32768 < s16_32767);
+
+    weak_assert(s16_32767 > s16_n32767);
+    weak_assert(s16_n32767 < s16_32767);
+
+    weak_assert(s16_n32767 > s16_n32768);
+    weak_assert(s16_n32768 < s16_n32767);
+}
+
 void main()
 {
   rb_set_window(redbus);
@@ -134,53 +224,27 @@ void main()
   print("workaround"); workaround();
   print("infinite"); infinite();
   */
+  print("Testing asserts...");
+  weak_assert(1 != 1);
+  weak_assert(1 == 0);
   {
-    uint8_t u8_0 = 0,
-      u8_1 = 1,
-      u8_127 = 127,
-      u8_128 = 128,
-      u8_129 = 129,
-      u8_255 = 255;
+    char buf[] = "        ";
+    itoa((int16_t)0x8000, buf, 10);
+    print(buf);
+  }
 
-    weak_assert(u8_1 > u8_0);
-    weak_assert(u8_127 > u8_0);
-    weak_assert(u8_128 > u8_0);
-    weak_assert(u8_129 > u8_0);
-    weak_assert(u8_255 > u8_0);
-
-    weak_assert(u8_0 < u8_1);
-    weak_assert(u8_0 < u8_127);
-    weak_assert(u8_0 < u8_128);
-    weak_assert(u8_0 < u8_129);
-    weak_assert(u8_0 < u8_255);
-
-    weak_assert(u8_127 > u8_1);
-    weak_assert(u8_128 > u8_1);
-    weak_assert(u8_129 > u8_1);
-    weak_assert(u8_255 > u8_1);
-
-    weak_assert(u8_1 < u8_127);
-    weak_assert(u8_1 < u8_128);
-    weak_assert(u8_1 < u8_129);
-    weak_assert(u8_1 < u8_255);
-
-    weak_assert(u8_128 > u8_127);
-    weak_assert(u8_129 > u8_127);
-    weak_assert(u8_255 > u8_127);
-
-    weak_assert(u8_127 < u8_128);
-    weak_assert(u8_127 < u8_129);
-    weak_assert(u8_127 < u8_255);
-
-    weak_assert(u8_129 > u8_128);
-    weak_assert(u8_255 > u8_128);
-
-    weak_assert(u8_128 < u8_129);
-    weak_assert(u8_128 < u8_255);
-
-    weak_assert(u8_255 > u8_129);
-
-    weak_assert(u8_129 < u8_255);
+  print("Now for the test!");
+  {
+    signed_test();
+  }
+  print("Testing for loops!");
+  {
+    uint16_t i;
+    char* buf = "0 to 3 Loop!";
+    for(i = 0; i < 3; ++i) {
+      buf[0] = '0' + i;
+      print(buf);
+    }
   }
   print("End!");
 }
