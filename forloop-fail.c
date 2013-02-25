@@ -1,4 +1,5 @@
 #include "core.h"
+#include "stdint.h"
 
 
 //make sure:  a,b,c,d are enabled
@@ -109,6 +110,10 @@ void infinite()
   }
 }
 
+#define weak_assert(cond)	      \
+  if (!(cond))			      \
+    print("Assertion failed: " #cond);
+
 void main()
 {
   rb_set_window(redbus);
@@ -121,12 +126,61 @@ void main()
   con->line = 1;
 
   print("Begin");
-  int8_test();
-  while(1);
+  //int8_test();
+  //while(1);
 
-  print("Begin!");
+  /*print("Begin!");
   print("pass"); pass();
   print("workaround"); workaround();
   print("infinite"); infinite();
+  */
+  {
+    uint8_t u8_0 = 0,
+      u8_1 = 1,
+      u8_127 = 127,
+      u8_128 = 128,
+      u8_129 = 129,
+      u8_255 = 255;
+
+    weak_assert(u8_1 > u8_0);
+    weak_assert(u8_127 > u8_0);
+    weak_assert(u8_128 > u8_0);
+    weak_assert(u8_129 > u8_0);
+    weak_assert(u8_255 > u8_0);
+
+    weak_assert(u8_0 < u8_1);
+    weak_assert(u8_0 < u8_127);
+    weak_assert(u8_0 < u8_128);
+    weak_assert(u8_0 < u8_129);
+    weak_assert(u8_0 < u8_255);
+
+    weak_assert(u8_127 > u8_1);
+    weak_assert(u8_128 > u8_1);
+    weak_assert(u8_129 > u8_1);
+    weak_assert(u8_255 > u8_1);
+
+    weak_assert(u8_1 < u8_127);
+    weak_assert(u8_1 < u8_128);
+    weak_assert(u8_1 < u8_129);
+    weak_assert(u8_1 < u8_255);
+
+    weak_assert(u8_128 > u8_127);
+    weak_assert(u8_129 > u8_127);
+    weak_assert(u8_255 > u8_127);
+
+    weak_assert(u8_127 < u8_128);
+    weak_assert(u8_127 < u8_129);
+    weak_assert(u8_127 < u8_255);
+
+    weak_assert(u8_129 > u8_128);
+    weak_assert(u8_255 > u8_128);
+
+    weak_assert(u8_128 < u8_129);
+    weak_assert(u8_128 < u8_255);
+
+    weak_assert(u8_255 > u8_129);
+
+    weak_assert(u8_129 < u8_255);
+  }
   print("End!");
 }
