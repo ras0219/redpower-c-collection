@@ -29,10 +29,36 @@ void main()
    if((our_expand->in & IT_IS_SHINING) != (IT_IS_SHINING))
     can_run=0;
    
-   if(can_run==1)
+   if(can_run==0) //damn reversed logic
       our_expand->out|= UU_GENER_ON; 
    else
       our_expand->out = 0;
+
+    wait();
+    wait();
+    wait();
+    wait();
+    wait();
+
+
+    wait();
+    wait();
+    wait();
+    wait();
+    wait();
+ 
+    wait();
+    wait();
+    wait();
+    wait();
+    wait();
+  
+    wait();
+    wait();
+    wait();
+    wait();
+    wait();
   }
+
   
 }
