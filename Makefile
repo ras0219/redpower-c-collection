@@ -1,5 +1,4 @@
-CCDIR=
-#~/opt/share/rpc8ecc/bin/
+CCDIR=~/opt/share/rpc8ecc/bin/
 LIBDIR=./lib/
 
 LD = $(CCDIR)ld65
@@ -9,7 +8,7 @@ AL = $(CCDIR)align
 
 KEEP_ASS = True
 
-CPU = 65c02 
+CPU = 65816 
 CINCLUDE = -Iinclude
 CFLAGS = -t none --cpu $(CPU)
 LFLAGS = -C $(LIBDIR)rpc8e.cfg
@@ -17,7 +16,7 @@ LLIBS  = $(LIBDIR)rpc8e.lib
 
 #gonna leave this here for now
 
-IMAGES = myprog.img memtest.img malloc-test.img elevator.img
+IMAGES = myprog.img memtest.img malloc-test.img elevator.img forloop-fail.img uu-matter.img
 
 .PHONY: all
 
